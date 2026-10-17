@@ -12,20 +12,60 @@ import {
   Video,
   Image as ImageIcon,
   AlertCircle,
+  Lock,
+  KeyRound,
 } from 'lucide-react';
 import { getStoreSettings, saveStoreSettings } from '@/lib/store';
 import { StoreSettings } from '@/types';
 import { DEFAULT_STORE_SETTINGS } from '@/lib/initialData';
 import { sanitizeWhatsAppNumber } from '@/lib/whatsapp';
+import { getCurrentAdminEmail, updateAdminCredentials } from '@/lib/auth';
 
 export default function AdminSettingsPage() {
   const [settings, setSettings] = useState<StoreSettings>(DEFAULT_STORE_SETTINGS);
   const [saving, setSaving] = useState(false);
   const [successToast, setSuccessToast] = useState('');
 
+  // Admin Credential Management State
+  const [adminEmail, setAdminEmail] = useState('');
+  const [newPassword, setNewPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [credError, setCredError] = useState('');
+  const [credSuccess, setCredSuccess] = useState('');
+
   useEffect(() => {
     getStoreSettings().then(setSettings);
+    setAdminEmail(getCurrentAdminEmail());
   }, []);
+
+  const handleUpdateCredentials = (e: React.FormEvent) => {
+    e.preventDefault();
+    setCredError('');
+    setCredSuccess('');
+
+    if (!adminEmail.trim()) {
+      setCredError('Please enter a valid administrator email.');
+      return;
+    }
+    if (!newPassword) {
+      setCredError('Please enter a new password.');
+      return;
+    }
+    if (newPassword.length < 6) {
+      setCredError('Password must be at least 6 characters long.');
+      return;
+    }
+    if (newPassword !== confirmPassword) {
+      setCredError('Passwords do not match. Please re-enter.');
+      return;
+    }
+
+    updateAdminCredentials(adminEmail.trim(), newPassword);
+    setCredSuccess('Administrator credentials updated successfully! Please save your new password.');
+    setNewPassword('');
+    setConfirmPassword('');
+    setTimeout(() => setCredSuccess(''), 5000);
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -310,6 +350,87 @@ export default function AdminSettingsPage() {
               placeholder="e.g. Welcome to Dr. Praveen’s Homoeopathy Clinic & Pharmacy..."
               className="w-full px-3.5 py-2 text-xs sm:text-sm border border-gray-300 rounded-xl"
             />
+          </div>
+        </div>
+
+        {/* 6. Administrator Security & Login Credentials */}
+        <div className="bg-white rounded-3xl p-6 sm:p-7 border border-gray-200 shadow-xs space-y-4">
+          <div className="flex items-center gap-2 pb-3 border-b border-gray-100">
+            <Lock className="w-5 h-5 text-brand-blue" />
+            <h2 className="font-bold text-base text-gray-900">
+              Administrator Security &amp; Login Credentials
+            </h2>
+          </div>
+
+          <p className="text-xs text-gray-500">
+            Change your administrator email and login password. These credentials are used to securely sign in to your dashboard at <code className="bg-gray-100 px-1 py-0.5 rounded text-gray-800">/admin/login</code>.
+          </p>
+
+          {credError && (
+            <div className="p-3 bg-red-50 border border-red-200 text-xs text-red-700 rounded-xl flex items-center gap-2">
+              <AlertCircle className="w-4 h-4 text-red-500 flex-shrink-0" />
+              <span>{credError}</span>
+            </div>
+          )}
+
+          {credSuccess && (
+            <div className="p-3 bg-green-50 border border-green-200 text-xs text-green-800 rounded-xl flex items-center gap-2">
+              <CheckCircle2 className="w-4 h-4 text-green-600 flex-shrink-0" />
+              <span>{credSuccess}</span>
+            </div>
+          )}
+
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <div>
+              <label className="block text-xs font-bold text-gray-700 mb-1">
+                Admin Email Address
+              </label>
+              <input
+                type="email"
+                required
+                value={adminEmail}
+                onChange={(e) => setAdminEmail(e.target.value)}
+                placeholder="admin@drpraveenclinic.com"
+                className="w-full px-3.5 py-2 text-xs sm:text-sm border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-blue/20"
+              />
+            </div>
+
+            <div>
+              <label className="block text-xs font-bold text-gray-700 mb-1">
+                New Password
+              </label>
+              <input
+                type="password"
+                value={newPassword}
+                onChange={(e) => setNewPassword(e.target.value)}
+                placeholder="Min. 6 characters"
+                className="w-full px-3.5 py-2 text-xs sm:text-sm border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-blue/20"
+              />
+            </div>
+
+            <div>
+              <label className="block text-xs font-bold text-gray-700 mb-1">
+                Confirm New Password
+              </label>
+              <input
+                type="password"
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+                placeholder="Re-enter password"
+                className="w-full px-3.5 py-2 text-xs sm:text-sm border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-blue/20"
+              />
+            </div>
+          </div>
+
+          <div className="pt-2">
+            <button
+              type="button"
+              onClick={handleUpdateCredentials}
+              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gray-900 hover:bg-black text-white text-xs font-bold shadow-xs transition-colors"
+            >
+              <KeyRound className="w-3.5 h-3.5" />
+              <span>Update Admin Credentials</span>
+            </button>
           </div>
         </div>
 

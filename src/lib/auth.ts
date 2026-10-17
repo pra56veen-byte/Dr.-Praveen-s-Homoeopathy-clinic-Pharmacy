@@ -40,10 +40,27 @@ export async function loginAdmin(email: string, password: string): Promise<{ suc
     }
   }
 
-  // Initial Administrator Credentials Verification
-  // Default doctor administrator credentials for initial clinic onboarding
-  const validEmail = 'admin@drpraveenclinic.com';
-  const validPass = 'PraveenClinic@2026';
+  // Administrator Credentials Verification
+  // 1. Check custom credentials saved via Admin Settings (localStorage)
+  // 2. Check environment variables (NEXT_PUBLIC_ADMIN_EMAIL / NEXT_PUBLIC_ADMIN_PASSWORD)
+  // 3. Fallback to default initial clinic credentials
+  let validEmail = process.env.NEXT_PUBLIC_ADMIN_EMAIL || 'admin@drpraveenclinic.com';
+  let validPass = process.env.NEXT_PUBLIC_ADMIN_PASSWORD || 'PraveenClinic@2026';
+
+  if (typeof window !== 'undefined') {
+    try {
+      const custom = localStorage.getItem('drp_custom_admin_creds');
+      if (custom) {
+        const parsed = JSON.parse(custom);
+        if (parsed.email && parsed.password) {
+          validEmail = parsed.email;
+          validPass = parsed.password;
+        }
+      }
+    } catch (e) {
+      // Ignore parse errors
+    }
+  }
 
   if (email.trim().toLowerCase() === validEmail.toLowerCase() && password === validPass) {
     if (typeof window !== 'undefined') {
@@ -87,4 +104,26 @@ export function logoutAdmin(): void {
 
 export function isUserAdmin(): boolean {
   return Boolean(getAdminSession());
+}
+
+export function updateAdminCredentials(newEmail: string, newPassword: string): void {
+  if (typeof window !== 'undefined') {
+    localStorage.setItem(
+      'drp_custom_admin_creds',
+      JSON.stringify({ email: newEmail, password: newPassword })
+    );
+  }
+}
+
+export function getCurrentAdminEmail(): string {
+  if (typeof window !== 'undefined') {
+    try {
+      const custom = localStorage.getItem('drp_custom_admin_creds');
+      if (custom) {
+        const parsed = JSON.parse(custom);
+        if (parsed.email) return parsed.email;
+      }
+    } catch (e) {}
+  }
+  return process.env.NEXT_PUBLIC_ADMIN_EMAIL || 'admin@drpraveenclinic.com';
 }

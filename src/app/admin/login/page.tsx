@@ -113,24 +113,6 @@ export default function AdminLoginPage() {
           </button>
         </form>
 
-        {/* Initial Credentials Hint Box for Clinic Administrator */}
-        <div className="p-4 bg-blue-50/70 border border-blue-200 rounded-2xl text-xs text-blue-900 space-y-2">
-          <div className="flex items-center gap-1.5 font-bold text-brand-blue">
-            <KeyRound className="w-4 h-4" />
-            <span>Initial Clinic Administrator Access</span>
-          </div>
-          <p className="text-[11px] text-gray-600 leading-snug">
-            For initial onboarding, you can log in using:
-          </p>
-          <div className="p-2 bg-white rounded-lg border border-blue-100 font-mono text-[11px] space-y-1 text-gray-800">
-            <div>Email: <strong className="text-brand-blue">admin@drpraveenclinic.com</strong></div>
-            <div>Password: <strong className="text-brand-blue">PraveenClinic@2026</strong></div>
-          </div>
-          <p className="text-[10px] text-gray-500">
-            You can also connect Supabase Auth in the setup tab to invite multiple staff members with custom credentials.
-          </p>
-        </div>
-
         <div className="text-center pt-2">
           <Link href="/" className="text-xs text-gray-500 hover:text-brand-blue">
             ← Return to Clinic Website

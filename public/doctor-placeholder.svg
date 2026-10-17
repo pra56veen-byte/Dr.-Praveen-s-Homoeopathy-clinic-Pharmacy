@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300" width="400" height="300">
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#EBF3FC" />
+      <stop offset="100%" stop-color="#F2F9EC" />
+    </linearGradient>
+  </defs>
+  <rect width="400" height="300" rx="24" fill="url(#bgGrad)" />
+  <!-- Doctor silhouette circle -->
+  <circle cx="200" cy="110" r="50" fill="#1760CB" opacity="0.15" />
+  <circle cx="200" cy="95" r="28" fill="#1760CB" />
+  <path d="M150 180 C 150 140, 250 140, 250 180 Z" fill="#1760CB" />
+  <!-- Stethoscope icon -->
+  <path d="M185 140 C 185 160, 215 160, 215 140" fill="none" stroke="#8BCB42" stroke-width="4" stroke-linecap="round" />
+  <circle cx="200" cy="165" r="5" fill="#8BCB42" />
+  <!-- Text -->
+  <text x="200" y="215" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="18" font-weight="bold" fill="#1F2937">Dr. Praveen</text>
+  <text x="200" y="238" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="13" font-weight="600" fill="#1760CB">Homoeopathic Physician &amp; Consultant</text>
+  <text x="200" y="258" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="11" fill="#6B7280">Bengaluru Clinic &amp; Pharmacy • Nature’s Way of Cure</text>
+</svg>
